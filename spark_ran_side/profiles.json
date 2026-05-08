@@ -1,0 +1,254 @@
+{
+  "version": "v3_profile_binding_full_posture_scene3",
+  "slice_classes": {
+    "background": {
+      "id": 1,
+      "description": "low weight, low cap, low floor, easy to throttle",
+      "dl_weight_mul": 0.5,
+      "ul_weight_mul": 0.5,
+      "dl_rb_cap": 6,
+      "ul_rb_cap": 6,
+      "dl_rb_floor": 2,
+      "ul_rb_floor": 2,
+      "dl_max_consecutive_grants": 1,
+      "ul_max_consecutive_grants": 1,
+      "human_summary": "适合夜间、后台和低优先级传输。"
+    },
+    "balanced": {
+      "id": 2,
+      "description": "default balanced",
+      "dl_weight_mul": 1.0,
+      "ul_weight_mul": 1.0,
+      "dl_rb_cap": 12,
+      "ul_rb_cap": 12,
+      "dl_rb_floor": 4,
+      "ul_rb_floor": 4,
+      "dl_max_consecutive_grants": 4,
+      "ul_max_consecutive_grants": 4,
+      "human_summary": "适合普通文本、IoT、日常业务。"
+    },
+    "throughput": {
+      "id": 3,
+      "description": "high throughput biased",
+      "dl_weight_mul": 10.0,
+      "ul_weight_mul": 4.0,
+      "dl_rb_cap": 50,
+      "ul_rb_cap": 30,
+      "dl_rb_floor": 12,
+      "ul_rb_floor": 12,
+      "dl_max_consecutive_grants": 0,
+      "ul_max_consecutive_grants": 0,
+      "human_summary": "更强调连续吞吐和更大的单次资源块。"
+    },
+    "latency": {
+      "id": 4,
+      "description": "latency biased",
+      "dl_weight_mul": 6.0,
+      "ul_weight_mul": 6.0,
+      "dl_rb_cap": 10,
+      "ul_rb_cap": 10,
+      "dl_rb_floor": 4,
+      "ul_rb_floor": 4,
+      "dl_max_consecutive_grants": 6,
+      "ul_max_consecutive_grants": 6,
+      "human_summary": "更强调快速排队和较短 burst。"
+    },
+    "uplink_boost": {
+      "id": 5,
+      "description": "uplink biased",
+      "dl_weight_mul": 1.0,
+      "ul_weight_mul": 10.0,
+      "dl_rb_cap": 12,
+      "ul_rb_cap": 50,
+      "dl_rb_floor": 4,
+      "ul_rb_floor": 12,
+      "dl_max_consecutive_grants": 2,
+      "ul_max_consecutive_grants": 0,
+      "human_summary": "更强调上传、同步和回传。"
+    },
+    "capped_fair": {
+      "id": 6,
+      "description": "fair / capped",
+      "dl_weight_mul": 1.2,
+      "ul_weight_mul": 1.2,
+      "dl_rb_cap": 8,
+      "ul_rb_cap": 8,
+      "dl_rb_floor": 2,
+      "ul_rb_floor": 2,
+      "dl_max_consecutive_grants": 2,
+      "ul_max_consecutive_grants": 2,
+      "human_summary": "避免连续多拍独占资源。"
+    },
+    "text_lite": {
+      "id": 7,
+      "description": "lightweight plain text / normal chat baseline",
+      "dl_weight_mul": 1.0,
+      "ul_weight_mul": 1.0,
+      "dl_rb_cap": 10,
+      "ul_rb_cap": 10,
+      "dl_rb_floor": 3,
+      "ul_rb_floor": 3,
+      "dl_max_consecutive_grants": 3,
+      "ul_max_consecutive_grants": 3,
+      "human_summary": "适合普通文字传输、轻量聊天和不强调抢首包的轻交互。"
+    },
+    "agentic_loop": {
+      "id": 8,
+      "description": "bidirectional short-loop agent interaction",
+      "dl_weight_mul": 5.0,
+      "ul_weight_mul": 6.0,
+      "dl_rb_cap": 8,
+      "ul_rb_cap": 8,
+      "dl_rb_floor": 4,
+      "ul_rb_floor": 4,
+      "dl_max_consecutive_grants": 3,
+      "ul_max_consecutive_grants": 3,
+      "human_summary": "适合多轮 agent 交互、工具调用和小包双向回环。"
+    },
+    "jitter_guard": {
+      "id": 9,
+      "description": "stable interactive / anti-jitter hybrid",
+      "dl_weight_mul": 2.2,
+      "ul_weight_mul": 2.2,
+      "dl_rb_cap": 8,
+      "ul_rb_cap": 8,
+      "dl_rb_floor": 3,
+      "ul_rb_floor": 3,
+      "dl_max_consecutive_grants": 2,
+      "ul_max_consecutive_grants": 2,
+      "human_summary": "适合控制时延波动、抑制 jitter、保护交互尾时延。"
+    }
+  },
+  "profiles": {
+    "default": {
+      "dl_id": 2,
+      "ul_id": 2,
+      "class": "balanced",
+      "description": "default balanced",
+      "human_summary": "默认均衡模式。",
+      "when_to_use": "普通日常业务",
+      "what_changes": "权重、cap、floor 都保持中间值",
+      "emphasize_direction": "both"
+    },
+    "text": {
+      "dl_id": 2,
+      "ul_id": 2,
+      "class": "balanced",
+      "description": "text / IoT / normal",
+      "human_summary": "适合文本、IoT、普通交互。",
+      "when_to_use": "聊天、消息、遥测、心跳",
+      "what_changes": "不会过度放大吞吐，也不会太激进抢资源",
+      "emphasize_direction": "both"
+    },
+    "image": {
+      "dl_id": 3,
+      "ul_id": 3,
+      "class": "throughput",
+      "description": "image / feed / content loading",
+      "human_summary": "更适合图片加载和内容流。",
+      "when_to_use": "刷图、相册、内容加载",
+      "what_changes": "更容易优先调度，单次 grant 不容易过小",
+      "emphasize_direction": "dl"
+    },
+    "video": {
+      "dl_id": 3,
+      "ul_id": 3,
+      "class": "throughput",
+      "description": "video meeting / livestream",
+      "human_summary": "更适合视频会议、直播和共享屏幕。",
+      "when_to_use": "视频会议、直播、共享屏幕",
+      "what_changes": "DL/UL grant 更不容易太小，连续吞吐更友好",
+      "emphasize_direction": "both"
+    },
+    "high_throughput_boost": {
+      "dl_id": 3,
+      "ul_id": 3,
+      "class": "throughput",
+      "description": "explicit high throughput boost",
+      "human_summary": "显式高吞吐模式。",
+      "when_to_use": "下载、大流量内容、共享屏幕",
+      "what_changes": "更高排序权重、更高 cap、更高 floor",
+      "emphasize_direction": "dl"
+    },
+    "low_latency_guard": {
+      "dl_id": 4,
+      "ul_id": 4,
+      "class": "latency",
+      "description": "latency biased",
+      "human_summary": "低时延偏置模式。",
+      "when_to_use": "交互、实时控制、游戏",
+      "what_changes": "更优先排到前面，但避免长 burst",
+      "emphasize_direction": "both"
+    },
+    "burst_uplink": {
+      "dl_id": 2,
+      "ul_id": 5,
+      "class": "uplink_boost",
+      "description": "uplink focused",
+      "human_summary": "上行增强模式。",
+      "when_to_use": "上传素材、回传、同步",
+      "what_changes": "UL 权重、cap、floor 显著提高",
+      "emphasize_direction": "ul"
+    },
+    "background_upload": {
+      "dl_id": 1,
+      "ul_id": 5,
+      "class": "background/uplink_boost",
+      "description": "background upload",
+      "human_summary": "前台保守、后台偏上行的上传模式。",
+      "when_to_use": "后台上传、夜间同步",
+      "what_changes": "DL 压低、UL 放大，避免前台被抢占",
+      "emphasize_direction": "ul"
+    },
+    "night_idle": {
+      "dl_id": 1,
+      "ul_id": 1,
+      "class": "background",
+      "description": "night idle / low priority",
+      "human_summary": "夜间低优先级模式。",
+      "when_to_use": "不着急的后台任务",
+      "what_changes": "权重和单次 grant 都更保守，也更容易被打断",
+      "emphasize_direction": "both"
+    },
+    "fairness_guard": {
+      "dl_id": 6,
+      "ul_id": 6,
+      "class": "capped_fair",
+      "description": "do not monopolize resources",
+      "human_summary": "公平受限模式。",
+      "when_to_use": "双 UE 共享、避免独占",
+      "what_changes": "限制连续 grant，更容易让出资源",
+      "emphasize_direction": "both"
+    },
+    "plain_text_guard": {
+      "dl_id": 7,
+      "ul_id": 7,
+      "class": "text_lite",
+      "description": "plain text / lightweight normal chat",
+      "human_summary": "普通文字传输模式。",
+      "when_to_use": "普通聊天、轻量文本、非高频回环交互",
+      "what_changes": "保持轻量和温和调度，不主动放大吞吐，也不刻意抢占首包优先级",
+      "emphasize_direction": "both"
+    },
+    "agentic_loop": {
+      "dl_id": 8,
+      "ul_id": 8,
+      "class": "agentic_loop",
+      "description": "agentic loop / tool-call / multi-turn agent interaction",
+      "human_summary": "Agentic loop 模式。",
+      "when_to_use": "多轮 agent 协作、工具调用、短周期请求-结果回环",
+      "what_changes": "双向都更重视小包、首包和空闲后恢复速度，但避免长 burst 持续占用",
+      "emphasize_direction": "both"
+    },
+    "anti_jitter_guard": {
+      "dl_id": 9,
+      "ul_id": 9,
+      "class": "jitter_guard",
+      "description": "anti-jitter / tail-latency guard",
+      "human_summary": "抗抖动保护模式。",
+      "when_to_use": "交互卡顿、RTT 波动大、希望减小 jitter 和尾时延",
+      "what_changes": "适度提高交互优先级，同时缩短连续 grants，优先收敛波动而不是追求峰值吞吐",
+      "emphasize_direction": "both"
+    }
+  }
+}
